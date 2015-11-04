@@ -1,0 +1,50 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	padding-bottom: 3%;
+	background-color: #00695C;
+}
+
+#title {
+	background-color: #B2DFDB;
+}
+
+.row {
+	width: 100%;
+	height: 100%;
+}
+
+#myMap{
+	/* use !important to override element.style that shadow my style */
+	width: 90%; 
+	height: 70%;
+	margin: 10%;
+	padding: 5%;
+	position: relative;
+}
+
+#list {
+	padding-top: 5%;
+}
+
+li {
+	width: 100%;
+	position: relative;
+	text-align: center;
+	background-color: #B2DFDB;
+	list-style-type: none;
+	border-style: solid;
+	border-color: #00897B;
+	/*border-width: 1px 0 0 0;*/
+}
+
+.container-fluid {
+	height: 100%;
+	
+}
