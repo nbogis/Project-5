@@ -13,18 +13,25 @@
 <body>
 	<p class="text-center" id="title">Search places around you !!</p>
 	<div class="container-fluid">
-		<input id="searchBar" class="controls" type="text" placeholder="Search Places">
+		<input data-bind="value: lat" placeholder="search place"/>
+		<input data-bind="value: lng" placeholder="search place"/>
+		<!-- <input id="searchBar" class="controls" type="text" placeholder="Search Places" data-bind="text: value"> -->
 		<div class="row">
-			<div class="col-md-6 col-xs-8" id="list" data-bind="foreach: landmarks" type="text/html">
-				<ul>
+		<div class="col-md-6 col-xs-8" id="list">
+			<!--data-bind="foreach: landmarks" type="text/html">-->		
+				<!-- 	<ul>
 					<li data-bind="text: name">
-						<!-- lat: <span data-bind="text: lat"></span>
-						lng: <span data-bind="text: lng"></span> -->
+						lat: <span data-bind="text: lat"></span>
+						lng: <span data-bind="text: lng"></span>
 					</li>
-				</ul>
-			</div>
-			<div class="col-md-8 col-xs-12" id="myMap"></div>
+				</ul> -->
+		</div> 
+		<div class="col-md-8 col-xs-12">
+			<div id="map"></div>
+			<div data-bind="latitude: viewModel.lat, longitude:viewModel.lng, map: map" ></div>
 		</div>
+		</div>
+
 	</div>
 	<script src='js/jQuery.js'></script>
 	<script src="bower_components/knockout/dist/knockout.js"></script>

@@ -20,6 +20,11 @@ body {
 	height: 100%;
 }
 
+#map{
+    width: 300px;
+    height: 300px;
+}
+
 #myMap{
 	/* use !important to override element.style that shadow my style */
 	width: 90%; 
