@@ -1,4 +1,4 @@
-
+/************** Model *************/
 var initialLoc = {
 	locations: ko.observableArray([
 		{
@@ -20,23 +20,17 @@ var initialLoc = {
 	])
 };
 
-/************** Model *************/
-var Places = function(data) {
-	// kncockout binding
-	this.name = ko.observable(data.name);
-	this.lat = ko.observable(data.position.lat);
-	this.lng = ko.observable(data.position.lng);
-};
 
 /************** ViewModel *************/
 //global for map
 var map;
 
 // Start the vew model with (21,39). Latitude and longtitude variable are bounded to the search bar
-var ViewMovel = function() {
+var ViewModel = function() {
     var self = this;
     self.lat = ko.observable(21);
     self.lng = ko.observable(39);
+    self.Search = ko.observable("shopping");
 };
 
 // function to start a map with zoom of 3, centered at 21 and 39 (my home city), and with ROADMAP view
@@ -72,16 +66,50 @@ ko.bindingHandlers.map = {
     update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
     	var Latitude = allBindingsAccessor().latitude();
     	var Longtitude = allBindingsAccessor().longitude();
+    	var location = {lat: Latitude, lng: Longtitude};
+    	console.log(location);
 
-        var latlng = new google.maps.LatLng(Latitude, Longtitude);
-
+        var Search = allBindingsAccessor().newSearch();
+        console.log(Search);
+        findPlaces(location, Search);
         // set marker position to the new position
+        var latlng = new google.maps.LatLng(Latitude, Longtitude);
         viewModel.mapMarker.setPosition(latlng);
     }
 };
 
+var findPlaces = function(location, search) {
+	infowindow = new google.maps.InfoWindow();
 
-var viewModel = new ViewMovel();
+	// create a place service
+	var service = new google.maps.places.PlacesService(map);
+	service.nearbySearch({
+		location: location,
+		radius: 500,
+		types: search,
+	}, callback);
+};
+var callback = function(results, status) {
+	if (status === google.maps.places.PlacesServiceStatus.OK) {
+	    for (var i = 0; i < results.length; i++) {
+	      createMarker(results[i]);
+	    }
+	}
+};
+
+var createMarker = function(place) {
+	var location = place.geometry.location;
+    var marker = new google.maps.Marker({
+        map: map,
+        position: location
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+  });
+};
+
+var viewModel = new ViewModel();
 makeMap();
 ko.applyBindings(viewModel);
 
