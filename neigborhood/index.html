@@ -10,12 +10,12 @@
 	<link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body  background="background.jpg">
 	<p class="text-center" id="title">Search places around you !!</p>
 	<div class="container-fluid">
-		<input data-bind="value: lat" placeholder="search place"/>
-		<input data-bind="value: lng" placeholder="search place"/>
-		<input data-binf="value: search" placeholder="search place"/>
+		<input data-bind="value: lat" placeholder="Latitude"/>
+		<input data-bind="value: lng" placeholder="Longitude"/>
+		<input data-bind="value: mySearch" placeholder="search place"/>
 		<!-- <input id="searchBar" class="controls" type="text" placeholder="Search Places" data-bind="text: value"> -->
 		<div class="row">
 		<div class="col-md-6 col-xs-8" id="list">
@@ -29,7 +29,7 @@
 		</div> 
 		<div class="col-md-8 col-xs-12">
 			<div id="map"></div>
-			<div data-bind="latitude: viewModel.lat, longitude:viewModel.lng, newSearch: viewModel.Search, map: map" ></div>
+			<div data-bind="latitude: viewModel.lat, longitude:viewModel.lng, newSearch: viewModel.mySearch, map: app.map" ></div>
 		</div>
 		</div>
 
