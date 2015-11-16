@@ -132,7 +132,7 @@ var ViewModel = function() {
 	// function to start a map with zoom of 3, centered at 19.67 and 44.15 (my home city), and with ROADMAP view
 	var makeMap = function(){    
 	    var myOptions = {
-	        zoom: 8,
+	        zoom: 7,
 	        center: new google.maps.LatLng(21.074424,40.324176),
 	        mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
@@ -183,24 +183,6 @@ var ViewModel = function() {
 		// self.favPlaces.push(this)
 	}
 
-	clearMarks = function(){
-    	if (app.markers.length > 0){
-	    	for (var i = 0; i < app.markers.length; i++){
-				app.markers[i].setMap(null); // Hide the markers
-			}
-		app.markers = []; // delete the markers
-    	}
-    }
-
-	this.visibility = function(TrueFalse) {
-		if (TrueFalse) {
-			this.setMap(app.map);
-		}
-		else {
-			this.setMap(null);
-		}
-	};
-
 	var createMarker = function(place,icon) {
 		var location = place.geometry.location;
 	    var marker = new google.maps.Marker({
@@ -236,13 +218,17 @@ var ViewModel = function() {
 		    app.infowindow.open(app.map, this);
 		});
 		return marker;
-		
 	};
 };
 
-
-
-
+clearMarks = function(){
+	if (app.markers.length > 0){
+    	for (var i = 0; i < app.markers.length; i++){
+			app.markers[i].setMap(null); // Hide the markers
+		}
+	app.markers = []; // delete the markers
+	}
+}
 
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
