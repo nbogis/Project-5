@@ -118,8 +118,8 @@ var ViewModel = function() {
 				if (places.length > 0) {
 					places.forEach(function(place) {
 						marker = createMarker(place,app.icon[0]);
+						app.markers.push(marker);
 					})
-					app.markers.push(marker);
 				}
 				else {
 					alert('Sorry we couldn\'t find matching locations')
@@ -149,6 +149,7 @@ var ViewModel = function() {
 	        position: location,
 	        icon: app.icon[1]
 	    });
+	    app.markers.push(marker);
 	    // add to the inital locations list
 	    // self.favPlaces.push(new Items({name: clickedLoc.name(),geometry:clickedLoc.geometry()}));
 
@@ -177,6 +178,19 @@ var ViewModel = function() {
 			app.infowindow.open(app.map, this);
 		});
 	};
+
+	this.addToList = function() {
+		// self.favPlaces.push(this)
+	}
+
+	clearMarks = function(){
+    	if (app.markers.length > 0){
+	    	for (var i = 0; i < app.markers.length; i++){
+				app.markers[i].setMap(null); // Hide the markers
+			}
+		app.markers = []; // delete the markers
+    	}
+    }
 
 	this.visibility = function(TrueFalse) {
 		if (TrueFalse) {
