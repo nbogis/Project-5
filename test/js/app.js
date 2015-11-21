@@ -8,8 +8,12 @@ var initialLoc = [
 				lat: 21.422470,
 				lng: 39.826207
 			}
+		},
+		tweet: {
+			href: "https://twitter.com/hashtag/kaaba",
+			widgetID: "666393352770686977"
 		}
-
+		
 	},
 	{
 		name: 'Hira Cave',
@@ -18,6 +22,10 @@ var initialLoc = [
 			lat: 21.457357,
 			lng: 39.858936
 			}
+		},
+		tweet: {
+			href: "https://twitter.com/search?q=%23Hira%20Cave",
+			widgetID: "666323386847490049"
 		}
 	},
 	{
@@ -27,6 +35,10 @@ var initialLoc = [
 				lat: 21.389082,
 				lng: 39.857912
 			}
+		},
+		tweet: {
+			href: "https://twitter.com/hashtag/makkah",
+			widgetID: "666360757890777090"
 		}
 	},
 	{
@@ -36,6 +48,10 @@ var initialLoc = [
 				lat: 21.285407,
 				lng: 39.237551
 			}
+		},
+		tweet: {
+			href: "https://twitter.com/hashtag/jeddah",
+			widgetID: "666394128276566016"
 		}
 	},
 	{
@@ -45,13 +61,19 @@ var initialLoc = [
 				lat: 21.074424,
 				lng: 40.324176
 			}
+		},
+		tweet: {
+			href: "https://twitter.com/hashtag/Taif",
+			widgetID: "666394807749611521"
 		}
 	}
 ];
 
+
 var Items = function(data) {
 	this.name = ko.observable(data.name);
 	this.geometry = ko.observable(data.geometry.location);
+	this.tweet = ko.observable(data.tweet);
 };
 
 //global for map
@@ -162,20 +184,23 @@ var ViewModel = function() {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
 
+			// show infowindow with wiki links
+			showInfoWiki(clickedLoc);
 			// show infowindow
-			var text = '<div><strong>'+ clickedLoc.name();
-			if (clickedLoc.formatted_address) {
-				text = text + '</strong><br>'+clickedLoc.formatted_address;
-			}
+			// var text = '<div><strong>'+ clickedLoc.name();
+			// if (clickedLoc.formatted_address) {
+			// 	text = text + '</strong><br>'+clickedLoc.formatted_address;
+			// }
 			// if (place.opening_hours){
 			// 	app.text = app.text + place.opening_hours;
 			// }
 			// else {
 
 			// }
-			app.infowindow.setContent(text);
-			// open the map with the info window
+			// app.infowindow.setContent(text);
+			// // open the map with the info window
 			app.infowindow.open(app.map, this);
+			// showTweets(clickedLoc);
 		});
 	};
 
@@ -221,7 +246,7 @@ var ViewModel = function() {
 	};
 };
 
-clearMarks = function(){
+var clearMarks = function(){
 	if (app.markers.length > 0){
     	for (var i = 0; i < app.markers.length; i++){
 			app.markers[i].setMap(null); // Hide the markers
@@ -229,6 +254,86 @@ clearMarks = function(){
 	app.markers = []; // delete the markers
 	}
 }
+
+// info window with place name and wiki links
+var showInfoWiki = function(place) {
+	// do a wiki search for articles
+	URL = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + place.name() + 
+            "&format=json&callback=wikiCallback";
+            console.log(URL);
+    // set timeout to handle error of waiting too long for resources. wait for 8 seconds then throw error
+    var wikiRequestTimeout = setTimeout(function() {
+        app.infowindow.setContent("Failed to get wikipedia resources");
+    }, 8000);
+
+    $.ajax({
+    	url: URL,
+    	dataType: 'jsonp',
+    	success: function(data) {
+    		console.log(data);
+    		// data[1] has array of all article titles
+    		// data[3] has array of the links to the articles which we need to direct user to 
+    		var articleTitles = data[1];
+    		var artLink = data[3];
+    		// we are interested in one article to show. I will pick the first one and show it
+    		var text = '<div><a href="' + artLink[0] + '" target="_blank">' + articleTitles[0] + '</a>';
+
+			app.infowindow.setContent(text);
+			// open the map with the info window
+
+	        // clear the timeout to stop timout from happening 
+	    	clearTimeout(wikiRequestTimeout);
+	    }
+    })
+}
+
+// function to add the twitter widgets that was initially created by me. The widgets work only
+// the initial locations 
+var showTweets = function(placeTweets) {
+	console.log($("#tweet").length);
+	if (document.getElementsByTagName("iframe").length !=0) {
+		$("#tweet").remove();
+		$("#mapTweet").find("iframe").remove();
+		$("#mapTweet").find("script").remove();
+		$("#mapTweet").find("script").remove();
+		console.log('if');
+	}
+	else{
+		console.log('else');
+		window.twttr = (function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0],
+			t = window.twttr || {};
+			if (d.getElementById(id)) return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "https://platform.twitter.com/widgets.js";
+			fjs.parentNode.insertBefore(js, fjs);
+			console.log('here again');
+			t._e = [];
+			t.ready = function(f) {
+			t._e.push(f);
+		};
+
+		return t;
+		}(document, "script", "twitter-wjs"));
+
+		var twitter = document.getElementById('twitter');
+		var href = placeTweets.tweet().href;
+		var number = placeTweets.tweet().widgetID;
+
+		// create an "a" tag that include the page and the widget id
+		var text = '<a id="tweet" class="twitter-timeline" href="'+ href + '" data-widget-id="'+
+		number + '">#'+ placeTweets.name() + ' Tweets</a>';
+		$(text).insertAfter("#map");
+
+		// insert a script function to handle the tweets
+		text = '<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?' +
+		"'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"+
+		'"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>';
+		
+		$(text).insertAfter("#tweet");
+	}
+};
 
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
