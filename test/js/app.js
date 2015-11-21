@@ -172,10 +172,8 @@ var ViewModel = function() {
 	        icon: app.icon[1]
 	    });
 	    app.markers.push(marker);
-	    // add to the inital locations list
-	    // self.favPlaces.push(new Items({name: clickedLoc.name(),geometry:clickedLoc.geometry()}));
 
-	    // show infoWindow when the marker is clicked
+	    // event listener to control what happen when a marker is clicked
 		google.maps.event.addListener(marker, 'click', function() {
 			// add animation to markers when they are clicked and not animated
 			if (marker.getAnimation() !== null) {
@@ -183,30 +181,15 @@ var ViewModel = function() {
 			} else {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
-
+			console.log('he');
 			// show infowindow with wiki links
 			showInfoWiki(clickedLoc);
-			// show infowindow
-			// var text = '<div><strong>'+ clickedLoc.name();
-			// if (clickedLoc.formatted_address) {
-			// 	text = text + '</strong><br>'+clickedLoc.formatted_address;
-			// }
-			// if (place.opening_hours){
-			// 	app.text = app.text + place.opening_hours;
-			// }
-			// else {
 
-			// }
-			// app.infowindow.setContent(text);
-			// // open the map with the info window
+			// open the map with the info window
 			app.infowindow.open(app.map, this);
-			// showTweets(clickedLoc);
 		});
 	};
 
-	this.addToList = function() {
-		// self.favPlaces.push(this)
-	}
 
 	var createMarker = function(place,icon) {
 		var location = place.geometry.location;
@@ -226,7 +209,7 @@ var ViewModel = function() {
 			} else {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
-
+			Z
 		// show infowindow
 			var text = '<div><strong>'+place.name;
 			if (place.formatted_address) {
@@ -276,6 +259,7 @@ var showInfoWiki = function(place) {
     		var articleTitles = data[1];
     		var artLink = data[3];
     		// we are interested in one article to show. I will pick the first one and show it
+    		// the name will show up as a link and a new tab will open when the link is pressed
     		var text = '<div><a href="' + artLink[0] + '" target="_blank">' + articleTitles[0] + '</a>';
 
 			app.infowindow.setContent(text);
