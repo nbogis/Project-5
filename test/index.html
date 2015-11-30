@@ -11,22 +11,30 @@
 </head>
 
 <body background="background.jpg">
-	<p class="text-center" id="title">Search places around you !!</p>
-	<div class="container">
-		<div class="row">
-		<div class="col-md-6 col-xs-8">
-			<!-- creating custom binding -->
-			<input class="form-control" id="mySearch" type="text" placeholder="search a place"/>
-			<!-- <button class="btn btn-default btn-lg" data-bind="click: addToList" type="button">&#10133</button> -->
-			<button class="btn btn-default btn-lg" data-bind="click: clearMarks" type="button">Clear Marks
-		      </button>
-			<ul id="list" data-bind="foreach: favPlaces">
-				<li data-bind="text: name, click: $parent.showInitLoc"></li>
-			</ul>
-	</div> 
-	<div id="mapTweet" class="col-md-8 col-xs-12">
-		<div id="map" data-bind="map: app.map"></div>
-	</div>
+	<h3 class="text-center" id="title">Search places around you !!</h3>
+	<!-- <div class="container"> -->
+		<div class="shift">
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+				<input class="form-control" id="mySearch" type="text" placeholder="search a place"/>
+				<button class="btn btn-default btn-lg" data-bind="click: clearMarks" type="button">Clear Marks
+			      </button>
+				<ul id="list" data-bind="foreach: favPlaces">
+					<li data-bind="text: name, click: $parent.showInitLoc"></li>
+				</ul>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+				<div id="map" data-bind="map: app.map"></div>
+			</div>
+		</div>
+			<div class="shift">
+				<div  class="col-xs-12 col-sm-12 col-md-6 col-lg-4" id="mapTweet"></div>
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-8" id="wiki">
+				<img id="wikiLogo" src="Wikipedia_Logo_1.0.png" alt="Wikipedia Logo">
+				<a id="wikiTitle" data-bind="text: title" target="_blank"></a>
+				<p data-bind="text: article"></p>
+			</div>
+		</div>
+	<!-- </div> -->
 	<script src='js/jQuery.js'></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/knockout-3.3.0.js"></script>

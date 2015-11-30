@@ -76,7 +76,7 @@ var Items = function(data) {
 	this.tweet = ko.observable(data.tweet);
 };
 
-//global for map
+//global variables for map
 var app = app || {};
 app.map, app.infowindow;
 app.text = [];
@@ -101,21 +101,19 @@ var ViewModel = function() {
     	self.favPlaces.push(new Items(loc));
     })
 
+    this.title = ko.observable();
+    this.article = ko.observable();
+
     // start the elements of the custom bind with deafulats values
 
     // register the binding using a binding handler
     ko.bindingHandlers.map= {
     	init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+	    	// start a map at a pre-defined location
 	    	makeMap();
-
-	    	// create markers from the locations we have in initialLoc
-	  //   	var names = [];
 
 	  		// start info window
 			app.infowindow = new google.maps.InfoWindow();
-	  //   	for (var i=0; i < initialLoc.length; i++) {
-			// 	createMarker(initialLoc[i],app.icon[1]);
-		 //    }
 		},
     	update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
 			var input = document.getElementById('mySearch');
@@ -131,10 +129,10 @@ var ViewModel = function() {
 			app.map.addListener('bounds_changed', function() {
 				searchBox.setBounds(app.map.getBounds());
 			});
-
 			// Listen for the event fired when the user selects a prediction and retrieve
 			  // more details for that place.
 			searchBox.addListener('places_changed', function() {
+				clearMarks();
 				var places = searchBox.getPlaces();
 				var marker;
 				if (places.length > 0) {
@@ -154,7 +152,7 @@ var ViewModel = function() {
 	// function to start a map with zoom of 3, centered at 19.67 and 44.15 (my home city), and with ROADMAP view
 	var makeMap = function(){    
 	    var myOptions = {
-	        zoom: 7,
+	        zoom: 8,
 	        center: new google.maps.LatLng(21.074424,40.324176),
 	        mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
@@ -172,7 +170,6 @@ var ViewModel = function() {
 	        icon: app.icon[1]
 	    });
 	    app.markers.push(marker);
-
 	    // event listener to control what happen when a marker is clicked
 		google.maps.event.addListener(marker, 'click', function() {
 			// add animation to markers when they are clicked and not animated
@@ -181,18 +178,19 @@ var ViewModel = function() {
 			} else {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
-			console.log('he');
 			// show infowindow with wiki links
 			showInfoWiki(clickedLoc);
 
 			// open the map with the info window
 			app.infowindow.open(app.map, this);
+			showTweets(clickedLoc);
+
 		});
 	};
 
-
 	var createMarker = function(place,icon) {
 		var location = place.geometry.location;
+
 	    var marker = new google.maps.Marker({
 	        map: app.map,
 	        animation: google.maps.Animation.DROP,
@@ -209,41 +207,33 @@ var ViewModel = function() {
 			} else {
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 			}
-			Z
-		// show infowindow
+			// show infowindow
 			var text = '<div><strong>'+place.name;
 			if (place.formatted_address) {
 				text = text + '</strong><br>'+place.formatted_address;
 			}
-		// if (place.opening_hours){
-		// 	app.text = app.text + place.opening_hours;
-		// }
-		// else {
-
-		// }
+			if (place.opening_hours){
+				text = text + '<br>'+place.opening_hours;
+			}
+			else {
+				text = text + '<br>no hours of operation registered';	
+			}
+			
 		    app.infowindow.setContent(text);
 		    // open the map with the info window
 		    app.infowindow.open(app.map, this);
+		    wikiRequest(place,self);
+		    
 		});
 		return marker;
 	};
 };
 
-var clearMarks = function(){
-	if (app.markers.length > 0){
-    	for (var i = 0; i < app.markers.length; i++){
-			app.markers[i].setMap(null); // Hide the markers
-		}
-	app.markers = []; // delete the markers
-	}
-}
-
-// info window with place name and wiki links
+// handle wiki requests for inital locations 
 var showInfoWiki = function(place) {
 	// do a wiki search for articles
 	URL = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + place.name() + 
             "&format=json&callback=wikiCallback";
-            console.log(URL);
     // set timeout to handle error of waiting too long for resources. wait for 8 seconds then throw error
     var wikiRequestTimeout = setTimeout(function() {
         app.infowindow.setContent("Failed to get wikipedia resources");
@@ -253,37 +243,70 @@ var showInfoWiki = function(place) {
     	url: URL,
     	dataType: 'jsonp',
     	success: function(data) {
-    		console.log(data);
     		// data[1] has array of all article titles
     		// data[3] has array of the links to the articles which we need to direct user to 
     		var articleTitles = data[1];
     		var artLink = data[3];
-    		// we are interested in one article to show. I will pick the first one and show it
+    		// we are interested in one article to open. I will pick the first one and show it
     		// the name will show up as a link and a new tab will open when the link is pressed
     		var text = '<div><a href="' + artLink[0] + '" target="_blank">' + articleTitles[0] + '</a>';
-
 			app.infowindow.setContent(text);
-			// open the map with the info window
-
 	        // clear the timeout to stop timout from happening 
 	    	clearTimeout(wikiRequestTimeout);
 	    }
     })
 }
 
+// handle wiki requests for searchbox searches 
+var wikiRequest = function(place,self) {
+	// wiki request 
+    URL = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + place.name + 
+        "&format=json&callback=wikiCallback";
+    // set timeout to handle error of waiting too long for resources. wait for 8 seconds then throw error
+    var wikiRequestTimeout = setTimeout(function() {
+        self.article("Failed to get wikipedia resources");
+    }, 8000);
+
+    $.ajax({
+    	url: URL,
+    	dataType: 'jsonp',
+    	success: function(data) {
+	    	console.log(URL);
+	    	console.log("success");
+    		document.getElementById('wiki').style.visibility = 'visible';
+    		var tmp = data[1];
+    		self.title(tmp[0]);
+    		self.article(data[2]);
+    		tmp = data[3];
+    		$('#wikiTitle').attr('href',tmp[0]);
+	        //clear the timeout to stop timout from happening 
+	    	clearTimeout(wikiRequestTimeout);
+	    }
+	});
+};
+
+// function to clear all markers
+var clearMarks = function(){
+	// if there are at least one marker, set it to null to not show
+	if (app.markers.length > 0){
+    	for (var i = 0; i < app.markers.length; i++){
+			app.markers[i].setMap(null); // Hide the markers
+		}
+	// delete the markers
+	app.markers = []; 
+	}
+}
+
 // function to add the twitter widgets that was initially created by me. The widgets work only
-// the initial locations 
+// for the initial locations 
 var showTweets = function(placeTweets) {
-	console.log($("#tweet").length);
 	if (document.getElementsByTagName("iframe").length !=0) {
 		$("#tweet").remove();
 		$("#mapTweet").find("iframe").remove();
 		$("#mapTweet").find("script").remove();
 		$("#mapTweet").find("script").remove();
-		console.log('if');
 	}
 	else{
-		console.log('else');
 		window.twttr = (function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0],
 			t = window.twttr || {};
@@ -292,7 +315,6 @@ var showTweets = function(placeTweets) {
 			js.id = id;
 			js.src = "https://platform.twitter.com/widgets.js";
 			fjs.parentNode.insertBefore(js, fjs);
-			console.log('here again');
 			t._e = [];
 			t.ready = function(f) {
 			t._e.push(f);
@@ -308,7 +330,8 @@ var showTweets = function(placeTweets) {
 		// create an "a" tag that include the page and the widget id
 		var text = '<a id="tweet" class="twitter-timeline" href="'+ href + '" data-widget-id="'+
 		number + '">#'+ placeTweets.name() + ' Tweets</a>';
-		$(text).insertAfter("#map");
+		// $(text).insertAfter("#mapTweet");
+		$("#mapTweet").append(text);
 
 		// insert a script function to handle the tweets
 		text = '<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?' +
