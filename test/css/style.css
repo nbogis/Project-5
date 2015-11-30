@@ -21,15 +21,14 @@ body {
 
 .btn {
 	border-radius: 5px;
-	/*margin-left: 15%;*/
-	/*width: 27%;*/
 	height: 400%;
 }
 
 .form-control {
 	border-radius: 5px;
-	width: 70%;
+	width: 82%;
 	height: 10%;
+	margin-bottom: 2%;
 }
 
 p {
@@ -38,31 +37,39 @@ p {
 	padding: 4%;
 }
 
-/*#map{
-    width: 50vw;
-    height: 50vh;
-    margin: 10%;
-    float: left;
+#wikiTitle {
+    text-decoration: blink;
+    font-size: 7vh;
 }
-*/
+
+#map{
+    width: 100%;
+    height: 250px;
+    margin: 0;
+    padding-left: 0;
+}
+
 #twitter-widget-0 {
 	padding-top: 5% !important;
 }
 
 #list {
-	width: 40%;
-	padding-top: 5%;
+	width: 100%;
+	padding-left: 0;
 }
 
 #wiki {
 	visibility: hidden;
-	padding: 3%;
+	width: 90%;
+	margin: 5%;
+	padding: 0 5%;
 	background-color: #E0E0E0;
 }
 
 #wikiLogo {
 	width: 10%;
 	height: 10%;
+    margin: 2%;
 }
 
 li {
@@ -73,21 +80,31 @@ li {
 	list-style-type: none;
 	border-style: solid;
 	border-color: #00897B;
-	/*border-width: 1px 0 0 0;*/
 }
 
-/* Small devices (tablets, 768px and up) */
-@media (max-width: 600px) { 
+/* Medium devices 768px */
+@media (min-width: 768px) {
+	.shift {
+		width: 100%;
+		margin: 0 4%;
+	}
+
+	.btn {
+		width: 45%;
+	}
+
+	#title {
+	    margin: 2%;
+	}
+
 	#list {
 		width: 100%;
 		padding-left: 0;
+	    margin-top: 15%;
 	}
-	
+
 	#map{
-	    width: 100%;
-	    height: 250px;
-	    margin: 0;
-        padding-left: 0;
+	    height: 300px;
 	}
 
 	#wikiLogo {
@@ -96,14 +113,23 @@ li {
 	}
 
 	#wiki {
-		width: 90%;
-		margin: 5%;
-		padding: 0 5%;
+		width: 50%;
+		margin: 3% 1%;
+		padding: 0 3%;
 	}
+
+	iframe {
+		margin: 0 50% 0 2%;
+	}
+
+	#mapTweet {
+		margin-top: 2%;
+		width: 40%;
+	}
+
 }
 
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 600px) {
+@media (min-width: 992px) {
 	.col-lg-4 {
 	    width: 30%;
 	}
@@ -117,11 +143,10 @@ li {
 		width: 27%;
 	}
 
-	#title {
-	    background-color: #B2EBF2;
+	/*#title {
 	    margin: 2% 5%;
 	}
-
+*/
 	#list {
 		width: 100%;
 		padding-left: 0;
@@ -129,7 +154,7 @@ li {
 	}
 
 	#map{
-	    width: 92%;
+	    width: 72%;
 	    height: 400px;
 	    margin: 0;
         padding-left: 0;
@@ -156,5 +181,3 @@ li {
 
 }
 
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: @screen-lg-min) { ... }
