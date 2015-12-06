@@ -9,7 +9,7 @@ app.text = [];
 app.markers = [];
 app.prevMarker = null;
 app.initArray = [];
-app.initMarkers = [];
+// app.initMarkers = [];
 
 var Items = function(data) {
 	this.name = ko.observable(data.name);
@@ -47,78 +47,37 @@ var ViewModel = function() {
 		if (event.keyCode == 13) {
 			console.log(self.favPlaces().length);
 			tmpArray = self.favPlaces().slice(0);
+			showAllMarkers(false);
 			// show all locations when no input
 			if (filter() == '' || filter() == 'undefined') {
 				showAll(true);
 			}
+			// when an input is entered
 			else {
-				// var index = [];
+				// empty favPlaces list to add the matching locations when a match is found
 				self.favPlaces().length=0;
-				console.log(tmpArray.length);
-				// console.log(self.favPlaces().length);
-				// console.log(tmpArray.length);
 				for(var i = 0; i < tmpArray.length; i++) {
+					// check if the input matching the name of any of the inital locations
+					// add the location to favPlaces to populate to the list
+					// and show the corrisponding marker
 					if(filter().toUpperCase() == tmpArray[i].name().toUpperCase()) {
 						self.favPlaces.push(tmpArray[i]);
-						console.log('name');
-					// 	index.push(i);
+						app.markers[i].setVisible(true);
 						continue;
 					}
 					else {
 						for(var j = 0; j < tmpArray[i].types().length; j++){
 							if (filter().toUpperCase() == tmpArray[i].types()[j].toUpperCase()) {
 								self.favPlaces.push(tmpArray[i]);
-								console.log('types');
-								// index.push(i);
+								app.markers[i].setVisible(true);
 								break;
 							}
 						}
 					}
-					console.log(self.favPlaces);
 				}
-			
-				// for(var i = 0; i < index.length; i++) {
-				// 	self.favPlaces.splice(index[i],1);
-				// }
-				// tmpArray=self.favPlaces();
-				
-				// self.favPlaces().length = 0;
-				// clearMarks();
-				
-				// nameCheck:for(var n = 0; n < app.initArray.length; n++) {
-				// 	noMatch = true; // flag is true when no match is found
-				// 	place = app.initArray[n];
-				// 	console.log(place.name());
-				// 			console.log('n '+n);
-
-				// 	// case insinsitive comaprison
-				// 	if (place.name().toUpperCase() == filter().toUpperCase()){
-				// 		// flag = true;
-				// 		noMatch = false;
-				// 		markerPlaces(n);
-				// 		continue nameCheck;
-				// 	}
-				// 	else {
-				// // app.initArray.forEach(function(place) {
-				// 		typeCheck:for(var i = 0; i < place.types().length; i++){
-				// 					console.log('n '+n);
-
-				// 			if (place.types()[i].toUpperCase() == filter().toUpperCase()) {
-				// 				// self.favPlaces.push(app.initArray[n]);
-				// 				// skip the for loops when the place match
-				// 				// flag = true;
-				// 				// match is found
-				// 				console.log('a match');
-				// 				noMatch = false;
-				// 				markerPlaces(n);
-				// 				break typeCheck;
-				// 			}
-				// 		}
-				// 	}
-					
-				// 	markerPlaces(n);
-				// }
-				// self.favPlaces(tmpArray.slice(0));
+				if (self.favPlaces().length == 0) {
+					showAll(false);
+				}
 			}
 		}
 		return true;
@@ -146,7 +105,7 @@ var ViewModel = function() {
 // function to start a map with zoom of 3, centered at 19.67 and 44.15 (my home city), and with ROADMAP view
 var makeMap = function(){    
     var myOptions = {
-        zoom: 15,
+        zoom: 14,
         center: new google.maps.LatLng(33.727737,-117.991831),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -231,7 +190,7 @@ var createMarker = function(place,icon) {
 		app.prevMarker = marker;
 	});
 	app.markers.push(marker);
-	app.initMarkers = app.markers.slice(0);
+	// app.initMarkers = app.markers.slice(0);
 	
 }
 
@@ -247,14 +206,26 @@ var clearMarks = function(){
 	}
 }
 
-// show all marker
+// show of hide all locations and marker
 var showAll = function(showOrNot) {
-	// console.log('showAll '+showOrNot);
-	// console.log(self.favPlaces());
-	viewModel.favPlaces(app.initArray.slice(0));
-	for (var i = 0; i < app.initMarkers.length; i++) {
-		app.initMarkers[i].setVisible(showOrNot);
-		app.markers = app.initMarkers.slice(0);
+	filter('');
+	// show or hide all locations in hte list
+	if (showOrNot == true) {
+		viewModel.favPlaces(app.initArray.slice(0));
+	}
+	else {
+		viewModel.favPlaces('');
+	}
+	showAllMarkers(showOrNot);
+}
+
+var showAllMarkers = function(showOrNot) {
+	// show or hide all markers
+	for (var i = 0; i < app.markers.length; i++) {
+		app.markers[i].setVisible(showOrNot);
+		// if (showOrNot == false) {
+		// 	app.markers.slice(i,1);	
+		// }
 	}
 }
 
@@ -271,6 +242,3 @@ function mapSuccess() {
 var mapError = function() {
 	alert('Error loading Google map. Please check your connection and reload the page');
 };
-
-
-

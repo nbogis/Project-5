@@ -17,13 +17,13 @@
 			<!-- update view model when user begins typing using valueUpdate: 'afterkeydown' -->
 			<!-- <input class="form-control" id="mySearch" type="text" data-bind="textInput: filter" placeholder= "Filter Markers"/> -->
 			<input class="form-control" id="mySearch" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown', event:{keypress: filterMarker} " placeholder= "Filter Markers"/>
-			<button class="btn btn-default btn-lg" type="button" data-bind="click: showAll">Show All Markers</button>
+			<button class="btn btn-default btn-lg" type="button" data-bind="click: showAll(true)">Show All Markers</button>
 			<ul id="list" data-bind="foreach: favPlaces">
 				<li data-bind="text: name"></li>
 			</ul>
 		</div>
 		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-			<div id="map" data-bind="map: app.map"></div>
+			<div id="map" data-bind="map: app.map,app.markers"></div>
 		</div>
 	</div>
 
