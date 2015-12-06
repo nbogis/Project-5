@@ -34,7 +34,9 @@ var ViewModel = function() {
 
     	// find initial locations around the neighborhood
     	initLocation(self,['store','gas startion','restaurant']);
+	    
 		tmpArray=app.initArray;
+
 	    // start info window
 		app.infowindow = new google.maps.InfoWindow();
 		},
@@ -51,22 +53,31 @@ var ViewModel = function() {
 				showAll(true);
 			}
 			else {
-				self.favPlaces().length=0;
-
-				for(var i = 0; i < tmpArray.length; i++) {
-					if(filter().toUpperCase() == tmpArray[i].name().toUpperCase()) {
-						self.favPlaces.push(tmpArray[i]);
-						continue;
+				var index = [];
+				// self.favPlaces().length=0;
+				// console.log(self.favPlaces().length);
+				// console.log(tmpArray.length);
+				for(var i = 0; i < self.favPlaces().length; i++) {
+					if(filter().toUpperCase() == self.favPlaces()[i].name().toUpperCase()) {
+						// self.favPlaces.push(tmpArray[i]);
+						index.push(i);
 					}
-					for(var j = 0; j < tmpArray[i].types().length; j++){
-						if (filter().toUpperCase() == tmpArray[i].types()[j].toUpperCase()) {
-							self.favPlaces.push(tmpArray[i]);
+					for(var j = 0; j < self.favPlaces()[i].types().length; j++){
+						if (filter().toUpperCase() == self.favPlaces()[i].types()[j].toUpperCase()) {
+							// self.favPlaces.push(tmpArray[i]);
+							index.push(i);
 							break;
 						}
 					}
-
 				}
-				tmpArray=self.favPlaces();
+			
+				for(var i = 0; i < index.length; i++) {
+					if (i != index[i]) {
+						self.favPlaces.splice(index[i],1);
+					}
+				}
+				// tmpArray=self.favPlaces();
+				
 				// self.favPlaces().length = 0;
 				// clearMarks();
 				
