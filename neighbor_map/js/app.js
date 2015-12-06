@@ -35,8 +35,6 @@ var ViewModel = function() {
     	// find initial locations around the neighborhood
     	initLocation(self,['store','gas startion','restaurant']);
 	    
-		tmpArray=app.initArray;
-
 	    // start info window
 		app.infowindow = new google.maps.InfoWindow();
 		},
@@ -47,35 +45,41 @@ var ViewModel = function() {
 
 	filterMarker = function(data,event) {
 		if (event.keyCode == 13) {
-			// tmpArray = self.favPlaces();
+			console.log(self.favPlaces().length);
+			tmpArray = self.favPlaces().slice(0);
 			// show all locations when no input
 			if (filter() == '' || filter() == 'undefined') {
 				showAll(true);
 			}
 			else {
-				var index = [];
-				// self.favPlaces().length=0;
+				// var index = [];
+				self.favPlaces().length=0;
+				console.log(tmpArray.length);
 				// console.log(self.favPlaces().length);
 				// console.log(tmpArray.length);
-				for(var i = 0; i < self.favPlaces().length; i++) {
-					if(filter().toUpperCase() == self.favPlaces()[i].name().toUpperCase()) {
-						// self.favPlaces.push(tmpArray[i]);
-						index.push(i);
+				for(var i = 0; i < tmpArray.length; i++) {
+					if(filter().toUpperCase() == tmpArray[i].name().toUpperCase()) {
+						self.favPlaces.push(tmpArray[i]);
+						console.log('name');
+					// 	index.push(i);
+						continue;
 					}
-					for(var j = 0; j < self.favPlaces()[i].types().length; j++){
-						if (filter().toUpperCase() == self.favPlaces()[i].types()[j].toUpperCase()) {
-							// self.favPlaces.push(tmpArray[i]);
-							index.push(i);
-							break;
+					else {
+						for(var j = 0; j < tmpArray[i].types().length; j++){
+							if (filter().toUpperCase() == tmpArray[i].types()[j].toUpperCase()) {
+								self.favPlaces.push(tmpArray[i]);
+								console.log('types');
+								// index.push(i);
+								break;
+							}
 						}
 					}
+					console.log(self.favPlaces);
 				}
 			
-				for(var i = 0; i < index.length; i++) {
-					if (i != index[i]) {
-						self.favPlaces.splice(index[i],1);
-					}
-				}
+				// for(var i = 0; i < index.length; i++) {
+				// 	self.favPlaces.splice(index[i],1);
+				// }
 				// tmpArray=self.favPlaces();
 				
 				// self.favPlaces().length = 0;
