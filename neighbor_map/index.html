@@ -1,0 +1,41 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Neighborhood Map</title>
+	
+	<link rel='stylesheet' href='css/bootstrap.min.css'>
+	<link href="css/style.css" rel="stylesheet">
+</head>
+
+<body background="background.jpg">
+	<div class="shift">
+		<h3 class="text-center" id="title">Search places around you !!</h3>
+		<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+			<!-- update view model when user begins typing using valueUpdate: 'afterkeydown' -->
+			<!-- <input class="form-control" id="mySearch" type="text" data-bind="textInput: filter" placeholder= "Filter Markers"/> -->
+			<input class="form-control" id="mySearch" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown', event:{keypress: filterMarker} " placeholder= "Filter Markers"/>
+			<button class="btn btn-default btn-lg" type="button" data-bind="click: showAll">Show All Markers</button>
+			<ul id="list" data-bind="foreach: favPlaces">
+				<li data-bind="text: name"></li>
+			</ul>
+		</div>
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+			<div id="map" data-bind="map: app.map"></div>
+		</div>
+	</div>
+
+
+	<script src='js/jQuery.js'></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/knockout-3.3.0.js"></script>
+	<!-- call google map and places library asynchronously with a callback function when succeeded and an error handler function call-->
+	<script></script>
+	<script async src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=mapSuccess" onerror="mapError()"></script>
+
+	<script src="js/app.js"></script>
+</body>
+
+</html>
