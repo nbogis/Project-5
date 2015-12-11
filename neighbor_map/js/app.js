@@ -54,27 +54,28 @@ var ViewModel = function() {
 			
 			// console.log(self.favPlaces()[1].visible());
 			// loop through the initial locations
-			for (var i = 0; i < app.initArray.length; i++) {
+			Label: for (var i = 0; i < app.initArray.length; i++) {
 				if (app.initArray[i].visible() == true) {
 					if(filter().toUpperCase() == app.initArray[i].name().toUpperCase()) {
 						self.favPlaces.push(app.initArray[i]);
-						app.initArray[i].visible(true);
 						continue;
 					}
 					else {
 						for(var j = 0; j < app.initArray[i].types().length; j++){
 							if (filter().toUpperCase() == app.initArray[i].types()[j].toUpperCase()) {
-								app.initArray[i].visible(true);
 								self.favPlaces.push(app.initArray[i]);
-								break;
+								continue Label;
 							}
 						}
+						// if no match found
+						console.log('Im here');
+						app.initArray[i].visible(false);
 					}
-					// if no match found
-					app.initArray[i].visible(false);
+					
 				}
 			}
 			for (i = 0; i < app.initArray.length; i++) {
+				app.markers[i].setVisible(false);
 				if(app.initArray[i].visible() == true) {
 					console.log('generating new place ' + i);
 					app.markers[i].setVisible(true);
@@ -178,7 +179,7 @@ var createMarker = function(place,icon) {
 	});
 	// app.initMarkers.push(marker);
 	app.markers.push(marker);
-	app.markers[app.markers.length-1].setVisible(false);
+	app.markers[app.markers.length-1].setVisible(true);
 	// app.initMarkers = app.markers.slice(0);
 	
 }
