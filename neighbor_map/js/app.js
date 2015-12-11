@@ -9,12 +9,13 @@ app.text = [];
 app.markers = [];
 app.prevMarker = null;
 app.initArray = [];
-// app.initMarkers = [];
+app.initMarkers = [];
 
 var Items = function(data) {
 	this.name = ko.observable(data.name);
 	this.types = ko.observable(data.types);
 	this.geometry = ko.observable(data.geometry);
+	this.visible = ko.observable(true);
 };
 
 /************** ViewModel *************/
@@ -24,7 +25,7 @@ var ViewModel = function() {
     this.favPlaces = ko.observableArray([]);
     filter = ko.observable();
 
-    var input,flag,place,noMatch,tmpArray=[];
+    var input,flag,place,noMatch,tmpArray=[],tmpMarkers=[];
 	// register the binding using a binding handler
     ko.bindingHandlers.map= {
     	init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -34,6 +35,10 @@ var ViewModel = function() {
 
     	// find initial locations around the neighborhood
     	initLocation(self,['store','gas startion','restaurant']);
+
+  //   	for (var n = 0; n < app.markers.length; n++) {
+		// 	app.markers[n].setVisible(false);
+		// }
 	    
 	    // start info window
 		app.infowindow = new google.maps.InfoWindow();
@@ -45,60 +50,43 @@ var ViewModel = function() {
 
 	filterMarker = function(data,event) {
 		if (event.keyCode == 13) {
-			console.log(self.favPlaces().length);
-			tmpArray = self.favPlaces().slice(0);
-			showAllMarkers(false);
-			// show all locations when no input
-			if (filter() == '' || filter() == 'undefined') {
-				showAll(true);
-			}
-			// when an input is entered
-			else {
-				// empty favPlaces list to add the matching locations when a match is found
-				self.favPlaces().length=0;
-				for(var i = 0; i < tmpArray.length; i++) {
-					// check if the input matching the name of any of the inital locations
-					// add the location to favPlaces to populate to the list
-					// and show the corrisponding marker
-					if(filter().toUpperCase() == tmpArray[i].name().toUpperCase()) {
-						self.favPlaces.push(tmpArray[i]);
-						app.markers[i].setVisible(true);
+			self.favPlaces().length=0;
+			
+			// console.log(self.favPlaces()[1].visible());
+			// loop through the initial locations
+			for (var i = 0; i < app.initArray.length; i++) {
+				if (app.initArray[i].visible() == true) {
+					if(filter().toUpperCase() == app.initArray[i].name().toUpperCase()) {
+						self.favPlaces.push(app.initArray[i]);
+						app.initArray[i].visible(true);
 						continue;
 					}
 					else {
-						for(var j = 0; j < tmpArray[i].types().length; j++){
-							if (filter().toUpperCase() == tmpArray[i].types()[j].toUpperCase()) {
-								self.favPlaces.push(tmpArray[i]);
-								app.markers[i].setVisible(true);
+						for(var j = 0; j < app.initArray[i].types().length; j++){
+							if (filter().toUpperCase() == app.initArray[i].types()[j].toUpperCase()) {
+								app.initArray[i].visible(true);
+								self.favPlaces.push(app.initArray[i]);
 								break;
 							}
 						}
 					}
-				}
-				if (self.favPlaces().length == 0) {
-					showAll(false);
+					// if no match found
+					app.initArray[i].visible(false);
 				}
 			}
+			for (i = 0; i < app.initArray.length; i++) {
+				if(app.initArray[i].visible() == true) {
+					console.log('generating new place ' + i);
+					app.markers[i].setVisible(true);
+					// self.favPlaces.push(app.initArray[i]);
+					// app.markers.push(app.initMarkers[i]);
+					// app.markers[app.markers.length-1].setMap();
+				}
+			}
+
+			console.log(app.initArray);
 		}
 		return true;
-		
-	}
-	var markerPlaces = function(n) {
-	// if filter() doesn't have a match
-		if (noMatch == true) {
-			// console.log(self.favPlaces()[n].name() + 'is no match');
-			// console.log('name ' + self.favPlaces()[n].name());
-			// console.log('remove '+ self.favPlaces()[n].name());
-			self.favPlaces.splice(n,1);
-			app.markers[n].setVisible(false);
-			app.markers.splice(n,1);
-		}
-		else {
-			// if match is found
-			// console.log(self.favPlaces()[n].name() + 'is a match');
-			// self.favPlaces().splice(n,1);
-			app.markers[n].setVisible(true);
-		}
 	}
 };
 
@@ -116,8 +104,7 @@ var makeMap = function(){
 // register initial locations and save them in initialLoc.
 // Consider stores, parks, and restaurants 
 var initLocation = function(self,types) {
-	clearMarks();
-	console.log('types '+ types);
+	// clearMarks();
 	var request = {
 		location: new google.maps.LatLng(33.727737,-117.991831),
 		radius: '1000',
@@ -189,7 +176,9 @@ var createMarker = function(place,icon) {
 		app.infowindow.open(app.map, this);
 		app.prevMarker = marker;
 	});
+	// app.initMarkers.push(marker);
 	app.markers.push(marker);
+	app.markers[app.markers.length-1].setVisible(false);
 	// app.initMarkers = app.markers.slice(0);
 	
 }
@@ -221,8 +210,11 @@ var showAll = function(showOrNot) {
 
 var showAllMarkers = function(showOrNot) {
 	// show or hide all markers
-	for (var i = 0; i < app.markers.length; i++) {
-		app.markers[i].setVisible(showOrNot);
+	app.markers = [];
+	console.log('here');
+	for (var i = 0; i < app.initMarkers.length; i++) {
+		app.markers.push(app.initMarkers[i]);
+		// app.markers[i].setVisible(showOrNot);
 		// if (showOrNot == false) {
 		// 	app.markers.slice(i,1);	
 		// }
