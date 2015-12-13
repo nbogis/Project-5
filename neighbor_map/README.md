@@ -7,4 +7,4 @@ store, school, hospital, and restaurants
 
 4- The Show All button shows all the places and markers from the initial list of places when clicked.
 
-Enoy figuring out interesting locations around Bella Terra !
+Enjoy figuring out interesting locations around Bella Terra !
