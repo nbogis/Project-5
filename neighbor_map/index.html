@@ -17,7 +17,7 @@
 			<!-- update view model when user begins typing using valueUpdate: 'afterkeydown' -->
 			<!-- <input class="form-control" id="mySearch" type="text" data-bind="textInput: filter" placeholder= "Filter Markers"/> -->
 			<input class="form-control" id="mySearch" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown', event:{keypress: filterMarker} " placeholder= "Filter Markers"/>
-			<button class="btn btn-default btn-lg" type="button" data-bind="click: viewModel.showAll(true)">All Markers</button>
+			<button class="btn btn-default btn-lg" type="button" data-bind="click: viewModel.showAll(true)">Show All</button>
 			<ul id="list" data-bind="foreach: favPlaces">
 				<li data-bind="text: name"></li>
 			</ul>

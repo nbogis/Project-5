@@ -39,7 +39,7 @@ var ViewModel = function() {
     	makeMap();
 
     	// find initial locations around the neighborhood
-    	initLocation(self,['store','gas station','restaurant']);
+    	initLocation(self,['store','school','hospital','restaurant']);
 	    
 	    // start info window
 		app.infowindow = new google.maps.InfoWindow();
@@ -48,6 +48,7 @@ var ViewModel = function() {
 
 	filterMarker = function(data,event) {
 		if (event.keyCode == 13) {
+			app.infowindow.close();
 			// if no input is entered, show all locations and markers
 			if (filter() == '' || filter() == 'undefined') {
 				self.showAll(true);
@@ -119,7 +120,7 @@ var ViewModel = function() {
 		// clearMarks();
 		var request = {
 			location: new google.maps.LatLng(33.727737,-117.991831),
-			radius: '1000',
+			radius: '2000',
 			types: [types]
 		};
 		var search = new google.maps.places.PlacesService(app.map);
@@ -198,6 +199,12 @@ var ViewModel = function() {
 			viewModel.favPlaces('');
 		}
 		showAllMarkers(showOrNot);
+		if (app.prevMarker != null) {
+			app.prevMarker.setAnimation(null);
+		}
+		if (app.infowindow != undefined) {
+			app.infowindow.close();
+		}
 	};
 
 	var showAllMarkers = function(showOrNot) {
@@ -206,9 +213,6 @@ var ViewModel = function() {
 			// app.markers.push(app.initMarkers[i]);
 			app.initArray[i].visible(showOrNot);
 			app.markers[i].setVisible(showOrNot);
-			// if (showOrNot == false) {
-			// 	app.markers.slice(i,1);	
-			// }
 		}
 	};
 
@@ -226,20 +230,24 @@ var ViewModel = function() {
 	    	url: URL,
 	    	dataType: 'jsonp',
 	    	success: function(data) {
-	    		console.log(self.title());
+	    		// data containes the reply object from wikipedia
 	    		var tmp = data[1];
 	    		// it seems undefined URL are still successful
+	    		// tmp[0] containes the title of the article. If there is no title, then the URL doesn't exist 
 	    		if (tmp[0] == undefined) {
-	    			console.log('bad URL');
+	    			document.getElementById('wiki').style.visibility = 'visible';
 	    			self.title('');
-					document.getElementById('wiki').style.visibility = 'visible';	    			self.article("Sorry this place has no wikipedia article.");
+	    			// output a message for no existing article
+	    			self.article("Sorry this place has no wikipedia article.");
 	    		}
 	    		else {
 	    			console.log("success");
 		    		document.getElementById('wiki').style.visibility = 'visible';
 		    		
 		    		self.title(tmp[0]);
+		    		// data[2] containes the article from wikipedia
 		    		self.article(data[2]);
+		    		// data[3] containes the link to the article
 		    		tmp = data[3];
 		    		$('#wikiTitle').attr('href',tmp[0]);
 	    		}
@@ -247,10 +255,9 @@ var ViewModel = function() {
 		    	clearTimeout(wikiRequestTimeout);
 		    },
 		    error: function(data) {
-		    	console.log('bad URL');
+		    	console.log('bad wiki URL');
 		    }
 		});
-		console.log(URL);
 	};
 
 };

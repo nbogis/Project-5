@@ -1,11 +1,10 @@
-To get Twitter Consumer key and consumer secret key: 
+1- Open the Neighbor Map App
 
-1. Go to https://dev.twitter.com/apps/new
-2. Fill in the fields
-3. Hit create your Twitter application
-4. Save these numbers to use in your application
+2- The map starts with the Bella Terra neighborhood in Hunitington Beach
 
-To get your access token: 
+3- To filter out locations by type, the following types or similar to it can be filtered: 
+store, school, hospital, and restaurants
 
-1. Click the "your access token" and a token will be created for you
-2. Save these numbers to use in your application
+4- The Show All button shows all the places and markers from the initial list of places when clicked.
+
+Enoy figuring out interesting locations around Bella Terra !
