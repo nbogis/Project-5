@@ -14,12 +14,10 @@
 	<div class="shift">
 		<h3 class="text-center" id="title">Search places around you !!</h3>
 		<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-			<!-- update view model when user begins typing using valueUpdate: 'afterkeydown' -->
-			<!-- <input class="form-control" id="mySearch" type="text" data-bind="textInput: filter" placeholder= "Filter Markers"/> -->
 			<input class="form-control" id="mySearch" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown', event:{keypress: filterMarker} " placeholder= "Filter Markers"/>
 			<button class="btn btn-default btn-lg" type="button" data-bind="click: viewModel.showAll(true)">Show All</button>
 			<ul id="list" data-bind="foreach: favPlaces">
-				<li data-bind="text: name"></li>
+				<li data-bind="text: name,click: $parent.clickPlace"></li>
 			</ul>
 		</div>
 		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">

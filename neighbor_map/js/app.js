@@ -16,7 +16,7 @@ var Items = function(data) {
 	this.types = ko.observable(data.types);
 	this.geometry = ko.observable(data.geometry);
 	this.visible = ko.observable(true);
-
+	this.index = ko.observable(data.index);
 };
 
 /************** ViewModel *************/
@@ -127,6 +127,8 @@ var ViewModel = function() {
 		search.nearbySearch(request, callback);
 
 		function callback(results, status) {
+			// var marker;
+			var ind = -1;
 			// callback when the search succeeded
 			if (status == google.maps.places.PlacesServiceStatus.OK) {
 				// set the icons for markers
@@ -139,8 +141,9 @@ var ViewModel = function() {
 				  createMarker(results[i]);
 				  initialLoc.push(results[i]);
 				}
-
 				initialLoc.forEach(function(loc) {
+					// loc.marker = marker;
+					loc.index = ++ind;
 			    	self.favPlaces.push(new Items(loc));
 			    	app.initArray.push(new Items(loc));
 			    })
@@ -161,6 +164,7 @@ var ViewModel = function() {
 	        position: location,
 	        icon: app.icon
 	    });
+	    // console.log(marker);
 
 	    // run event when a marker is clicked
 	    google.maps.event.addListener(marker, 'click', function() {    	    	
@@ -214,6 +218,27 @@ var ViewModel = function() {
 			app.initArray[i].visible(showOrNot);
 			app.markers[i].setVisible(showOrNot);
 		}
+	};
+
+	this.clickPlace = function(clickedPlace) {
+		var ind = clickedPlace.index();
+		if (app.prevMarker) {
+	    	// stop previous marker from bouncing
+			app.prevMarker.setAnimation(null);
+		}
+    	// set the info window to have info about the clicked place
+		// add animation to markers when they are clicked
+		if (app.markers[ind].getAnimation() !== null) {
+			app.markers[ind].setAnimation(null);
+		} 
+		else {	    	
+			// bounce current marker
+			app.markers[ind].setAnimation(google.maps.Animation.BOUNCE);
+		}
+		var text = '<div><strong>'+clickedPlace.name() +'</strong><br>'+clickedPlace.types()+'</div>';
+		app.infowindow.setContent(text);
+		app.infowindow.open(app.map, app.markers[ind]);
+		app.prevMarker = app.markers[ind];
 	};
 
 	// handle wiki requests for searchbox searches 
