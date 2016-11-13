@@ -1,10 +1,13 @@
-1- Open the Neighbor Map App
+# neighborhood-map
 
-2- The map starts with the Bella Terra neighborhood in Hunitington Beach
+### Projects' description 
+A website page showing a map of a neighborhood in Huntington Beach with a list of points of interests. The user can filter out the list by specifying the type of places such as store, school, hospital, restaurants, ... etc. In addition, wikipedia article about the POI is diplayed. 
 
-3- To filter out locations by type, the following types or similar to it can be filtered: 
-store, school, hospital, and restaurants
+### Project's Goal
+Apply data binding for dynamic update contents of the page
 
-4- The Show All button shows all the places and markers from the initial list of places when clicked.
+### Approach
+1- Using Knockout library to binding POI's marker on the map with filtered data
+2- Using Ajax requests to query infromation about the chosen POI from Wikipedia 
+3- Organizing the javascript code in MVVM view model 
 
-Enjoy figuring out interesting locations around Bella Terra !
